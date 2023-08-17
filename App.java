@@ -117,50 +117,155 @@ public class App {
             System.out.println();
 
             int pot = 0;
+            int player1bet = 0;
+            int player2bet = 0;
             for (int i = 0; i < 4; i++) {
-                int player1bet = 0;
-                int player2bet = 0;
-                int player1latestBet = 0;
-                int player2latestBet = 0;
+                int player1latestBet;
+                int player2latestBet;
                 if (turn == 0) {
                     do {
-                        if (player2latestBet != 0) {
-                            System.out.println("Player 2 bet " + player2latestBet + ".");
-                        }
                         do {
-                            System.out.println("Player 1, how much would you like to bet?");
+                            System.out.printf("Player 1, how much would you like to bet? (Chips: %d)\n", player1chips - player1bet);
+                            if (player2bet != 0 || player1bet != player2bet) {
+                                System.out.printf("%d to call, >= %d to raise, %d all-in\n", player2bet - player1bet, (player2bet - player1bet) * 2, player1chips - player1bet);
+                            }
                             player1latestBet = scanner.nextInt();
                             scanner.nextLine();
-                        } while (player1latestBet > player1chips || player1latestBet < player2latestBet || (player1latestBet < player2latestBet * 2 && player1bet + player1latestBet != player2bet));
+                            if (player1latestBet + player1bet > player1chips) {
+                                System.out.println("You don't have enough chips to bet that much.");
+                                continue;
+                            }
+                            if (player1latestBet + player1bet > player2chips) {
+                                System.out.println("You can't bet more than your opponent has.");
+                                continue;
+                            }
+                            if (player2bet == 0) {
+                                break;
+                            }
+                            if (player1latestBet + player1bet == player1chips) {
+                                break;
+                            }
+                            if (player1latestBet < player2bet - player1bet) {
+                                System.out.println("You must bet at least " + (player2bet - player1bet) + " to call.");
+                                continue;
+                            }
+                            if (player1latestBet + player1bet == player2bet) {
+                                break;
+                            }
+                            if (player1latestBet >= (player2bet - player1bet) * 2) {
+                                break;
+                            } else {
+                                System.out.println("You must bet at least " + (player2bet - player1bet) * 2 + " to raise.");
+                            }
+                        } while (true);
                         player1bet += player1latestBet;
-                        System.out.println("Player 1 bet " + player1latestBet + ".");
-                        do {
-                            System.out.println("Player 2, how much would you like to bet?");
-                            player2latestBet = scanner.nextInt();
-                            scanner.nextLine();
-                        } while (player2latestBet > player2chips || player2latestBet < player1latestBet || (player2latestBet < player1latestBet * 2 && player2bet + player2latestBet != player1bet));
-                        player2bet += player2latestBet;
-                        System.out.println("Player 1 bet " + player1bet + ".");
+                        System.out.println("Player 1 bets " + player1latestBet + ".");
+                        if (player1bet != player2bet) {
+                            do {
+                                System.out.printf("Player 2, how much would you like to bet? (Chips: %d)\n", player2chips - player2bet);
+                                System.out.printf("%d to call, >= %d to raise, all-in %d\n", player1bet - player2bet, (player1bet - player2bet) * 2, player2chips - player2bet);
+                                player2latestBet = scanner.nextInt();
+                                scanner.nextLine();
+                                if (player2latestBet + player2bet > player2chips) {
+                                    System.out.println("You don't have enough chips to bet that much.");
+                                    continue;
+                                }
+                                if (player2latestBet + player2bet > player1chips) {
+                                    System.out.println("You can't bet more than your opponent has.");
+                                    continue;
+                                }
+                                if (player2latestBet + player2bet == player2chips) {
+                                    break;
+                                }
+                                if (player2latestBet < player1bet - player2bet) {
+                                    System.out.println("You must bet at least " + (player1bet - player2bet) + " to call.");
+                                    continue;
+                                }
+                                if (player2latestBet + player2bet == player1bet) {
+                                    break;
+                                }
+                                if (player2latestBet >= (player1bet - player2bet) * 2) {
+                                    break;
+                                } else {
+                                    System.out.println("You must bet at least " + (player1bet - player2bet) * 2 + " to raise.");
+                                }
+                            } while (true);
+                            player2bet += player2latestBet;
+                            System.out.println("Player 2 bets " + player2latestBet + ".");
+                        }
+                        System.out.println("Player 1 acc bet: " + player1bet + ".");
+                        System.out.println("Player 2 acc bet: " + player2bet + ".");
                     } while (player1bet != player2bet);
                 } else {
                     do {
-                        if (player1latestBet != 0) {
-                            System.out.println("Player 1 bet " + player1latestBet + ".");
-                        }
                         do {
-                            System.out.println("Player 2, how much would you like to bet?");
+                            System.out.printf("Player 2, how much would you like to bet? (Chips: %d)\n", player2chips - player2bet);
+                            if  (player1bet != 0 || player1bet != player2bet) {
+                                System.out.printf("%d to call, >= %d to raise, all-in %d\n", player1bet - player2bet, (player1bet - player2bet) * 2, player2chips - player2bet);
+                            }
                             player2latestBet = scanner.nextInt();
                             scanner.nextLine();
-                        } while (player2bet + player2latestBet > player2chips || player2latestBet < player1latestBet || (player2bet + player2latestBet != player1bet && player2latestBet < player1latestBet * 2));
+                            if (player2latestBet + player2bet > player2chips) {
+                                System.out.println("You don't have enough chips to bet that much.");
+                                continue;
+                            }
+                            if (player2latestBet + player2bet > player1chips) {
+                                System.out.println("You can't bet more than your opponent has.");
+                                continue;
+                            }
+                            if (player1bet == 0) {
+                                break;
+                            }
+                            if (player2latestBet + player2bet == player2chips) {
+                                break;
+                            }
+                            if (player2latestBet < player1bet - player2bet) {
+                                System.out.println("You must bet at least " + (player1bet - player2bet) + " to call.");
+                                continue;
+                            }
+                            if (player2latestBet + player2bet == player1bet) {
+                                break;
+                            }
+                            if (player2latestBet >= (player1bet - player2bet) * 2) {
+                                break;
+                            } else {
+                                System.out.println("You must bet at least " + (player1bet - player2bet) * 2 + " to raise.");
+                            }
+                        } while (true);
                         player2bet += player2latestBet;
-                        System.out.println("Player 2 bet " + player2latestBet + ".");
-                        do {
-                            System.out.println("Player 1, how much would you like to bet?");
-                            player1latestBet = scanner.nextInt();
-                            scanner.nextLine();
-                        } while (player1latestBet > player1chips || player1latestBet < player2latestBet || (player1bet + player1latestBet != player2bet && player1latestBet < player2latestBet * 2));
-                        player1bet += player1latestBet;
-                        System.out.println("Player 2 bet " + player2bet + ".");
+                        System.out.println("Player 2 bets " + player2latestBet + ".");
+                        if (player1bet != player2bet) {
+                            do {
+                                System.out.printf("Player 1, how much would you like to bet? (Chips: %d)\n", player1chips - player1bet);
+                                System.out.printf("%d to call, >= %d to raise, all-in %d\n", player2bet - player1bet, (player2bet - player1bet) * 2, player1chips - player1bet);
+                                player1latestBet = scanner.nextInt();
+                                scanner.nextLine();
+                                if (player1latestBet + player1bet > player1chips) {
+                                    System.out.println("You don't have enough chips to bet that much.");
+                                    continue;
+                                }
+                                if (player1latestBet + player1bet > player2chips) {
+                                    System.out.println("You can't bet more than your opponent has.");
+                                    continue;
+                                }
+                                if (player1latestBet + player1bet == player1chips) {
+                                    break;
+                                }
+                                if (player1latestBet < player2bet - player1bet) {
+                                    System.out.println("You must bet at least " + (player2bet - player1bet) + " to call.");
+                                    continue;
+                                }
+                                if (player1latestBet >= (player2bet - player1bet) * 2) {
+                                    break;
+                                } else {
+                                    System.out.println("You must bet at least " + (player2bet - player1bet) * 2 + " to raise.");
+                                }
+                            } while (true);
+                            player1bet += player1latestBet;
+                            System.out.println("Player 1 bets " + player1latestBet + ".");
+                        }
+                        System.out.println("Player 1 acc bet: " + player1bet + ".");
+                        System.out.println("Player 2 acc bet: " + player2bet + ".");
                     } while (player1bet != player2bet);
                 }
                 pot += player1bet + player2bet;
@@ -278,7 +383,7 @@ public class App {
 
                     int player1BestHandValue = 0;
                     int player1BestHandHighCard = 0;
-                    int[] player1BestHandCards = new int[5];
+                    int[] player1BestHandCards = new int[1];
                     for (int k = 0; k < 3; k++) {
                         boolean player1colorStraight = true;
                         int firstCardSuit = player1BestHandSuits[k];
@@ -460,7 +565,7 @@ public class App {
 
                     int player2BestHandValue = 0;
                     int player2BestHandHighCard = 0;
-                    int[] player2BestHandCards = new int[0];
+                    int[] player2BestHandCards = new int[1];
                     for (int k = 0; k < 3; k++) {
                         boolean player2colorStraight = true;
                         int firstCardSuit = player2BestHandSuits[k];
