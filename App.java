@@ -160,7 +160,7 @@ public class App {
                         } while (true);
                         player1bet += player1latestBet;
                         System.out.println("Player 1 bets " + player1latestBet + ".");
-                        if (player1bet != player2bet) {
+                        if (player1bet == 0 || player1bet != player2bet) {
                             do {
                                 System.out.printf("Player 2, how much would you like to bet? (Chips: %d)\n", player2chips - player2bet);
                                 System.out.printf("%d to call, >= %d to raise, all-in %d\n", player1bet - player2bet, (player1bet - player2bet) * 2, player2chips - player2bet);
@@ -234,7 +234,7 @@ public class App {
                         } while (true);
                         player2bet += player2latestBet;
                         System.out.println("Player 2 bets " + player2latestBet + ".");
-                        if (player1bet != player2bet) {
+                        if (player2bet == 0 || player1bet != player2bet) {
                             do {
                                 System.out.printf("Player 1, how much would you like to bet? (Chips: %d)\n", player1chips - player1bet);
                                 System.out.printf("%d to call, >= %d to raise, all-in %d\n", player2bet - player1bet, (player2bet - player1bet) * 2, player1chips - player1bet);
@@ -255,6 +255,9 @@ public class App {
                                     System.out.println("You must bet at least " + (player2bet - player1bet) + " to call.");
                                     continue;
                                 }
+                                if (player1latestBet + player1bet == player2bet) {
+                                    break;
+                                }
                                 if (player1latestBet >= (player2bet - player1bet) * 2) {
                                     break;
                                 } else {
@@ -268,7 +271,6 @@ public class App {
                         System.out.println("Player 2 acc bet: " + player2bet + ".");
                     } while (player1bet != player2bet);
                 }
-                pot += player1bet + player2bet;
 
                 if (i == 0) {
                     System.out.println("Dealing flop...");
@@ -756,6 +758,7 @@ public class App {
                     }
                     System.out.println();
 
+                    pot = player1bet + player2bet;
                     if (player1BestHandValue > player2BestHandValue) {
                         player1chips += pot / 2;
                         player2chips -= pot / 2;
